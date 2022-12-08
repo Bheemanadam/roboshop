@@ -1,0 +1,63 @@
+- name: Demo on variables 
+  hosts: all
+  vars: 
+    URL: play.example.com 
+  tasks: 
+    - name: Print Hello 
+      ansible.builtin.debug: 
+        msg: "Sweta - {{ URL}}"
+
+- name: Demo on variables - from file
+  hosts: webserver
+  vars_files: 
+    - sample-vars.yml  
+  tasks: 
+    - name: Print Hello 
+      ansible.builtin.debug: 
+        msg: "{{ URL}} - Kranti"   
+
+- name: Demo on task level variables 
+  hosts: webserver
+  tasks: 
+    - name: Print Hello 
+      ansible.builtin.debug: 
+        msg: "{{ URL}} - Suhasini"  
+      vars: 
+        URL: task.example.com    
+
+- name: Demo on variables from inventory file
+  hosts: webserver
+  tasks: 
+    - name: Print Hello 
+      ansible.builtin.debug: 
+        msg: "{{ URL}} - Inventory"  
+
+
+
+- name: Print Fact/pre-defined variable 
+  hosts: webserver
+  tasks: 
+    - name: Print Hello 
+      ansible.builtin.debug: 
+        msg: "hostname - {{ ansible_hostname}} " 
+        msg: "Ip address - {{ansible_all_ipv4_addresses}}"
+
+
+- name: Register a variable 
+  hosts: webserver
+  tasks: 
+    - name: Get uptime 
+      ansible.builtin.shell: uptime 
+      register: out 
+
+    - name: print out registered variable 
+      ansible.builtin.debug:
+        msg: "{{out.stdout}}"    
+       
+    - name: declare a variable/fact    
+      ansible.builtin.set_fact:
+        SHELL_STDOUT: "{{out.stdout}}"
+
+    - name: print shell out from variable 
+      ansible.builtin.debug:
+        msg: "{{SHELL_STDOUT}}"

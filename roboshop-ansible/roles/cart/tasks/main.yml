@@ -1,0 +1,9 @@
+- name: Import common role for NodeJs
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: nodejs
+
+- name: Import rsyslog role 
+  ansible.builtin.include_role:
+    name: elk
+    tasks_from: rsyslog    

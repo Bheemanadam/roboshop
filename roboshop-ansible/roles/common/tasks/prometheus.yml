@@ -1,0 +1,65 @@
+
+
+- name: Downloading promethus node exporter
+  ansible.builtin.get_url:
+    #url:  https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.4.0/node_exporter-1.4.0.linux-amd64.tar.gz
+    dest: /tmp/node_exporter-1.4.0.linux-amd64.tar.gz
+
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/node_exporter-1.4.0.linux-amd64.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: adding a user for node exporter installation 
+  ansible.builtin.shell: useradd -rs /bin/false node_exporter
+  ignore_errors: yes
+
+- name: Copy node exporter to bin 
+  ansible.builtin.copy:
+    src: /tmp/node_exporter-1.4.0.linux-amd64/node_exporter
+    dest: /usr/local/bin/
+    mode: '0755'
+    remote_src: yes
+
+- name: Copy node exporter to bin 
+  ansible.builtin.copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/
+
+- name: Restart node_exporter and reload
+  ansible.builtin.systemd:
+    name: node_exporter  
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+
+# wget https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+# tar -xzvf node_exporter-1.2.2.linux-amd64.tar.gz
+# sudo useradd -rs /bin/false nodeusr
+# sudo mv node_exporter-1.2.2.linux-amd/node_exporter /usr/local/bin/
+
+# sudo vim /etc/systemd/system/node_exporter.service
+# systemctl daemon-reload
+
+# systemctl enable node_exporter
+
+
+  # 673  wget https://github.com/prometheus/node_exporter/releases/download/v1.4.0/node_exporter-1.4.0.linux-amd64.tar.gz
+  # 674  ls
+  # 675  tar -xvf node_exporter-1.4.0.linux-amd64.tar.gz
+  # 676  ls
+  # 677  cd node_exporter-1.4.0.linux-amd64
+  # 678  ls
+  # 679  mv node_exporter /usr/local/bin/
+  # 680  useradd -rs /bin/false node_exporter
+  # 681   vi /etc/systemd/system/node_exporter.service
+  # 682  sudo systemctl daemon-reload
+  # 683  sudo systemctl start node_exporter
+  # 684  sudo systemctl status node_exporter
+  # 685  sudo systemctl enable node_exporter
+  #node_exporter.service
+

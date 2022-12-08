@@ -1,0 +1,4 @@
+# ignore credentials 
+*temp*
+.terraform*
+*.tfstate*
